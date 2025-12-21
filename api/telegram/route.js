@@ -14,6 +14,7 @@ bot.start(ctx => ctx.reply("ربات فعاله"))
 bot.command("startgame", async (ctx) => {
     const chatId = ctx.chat.id;
     const exists = redis.get(`game:${chatId}`);
+    console.log(exists)
     if (exists) return ctx.reply("بازی در حال اجراست");
 
     const game = {
