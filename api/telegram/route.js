@@ -9,11 +9,13 @@ bot.on(message("text"), ctx => ctx.reply("hi"));
 export default async function handler(req, res) {
     if (req.method === "POST") {
         try {
-            await bot.handleUpdate(req.body)
+            await bot.handleUpdate(req.body);
+            res.status(200).send();
         } catch (error) {
             console.error("Bot Error :", error);
+            res.status(500).send();
+
         }
 
-        return new Response(JSON.stringify({ ok: true }, { status: 200 }));
     }
 }
