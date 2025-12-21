@@ -9,7 +9,8 @@ const redis = new Redis({
 })
 
 bot.start(ctx => ctx.reply("ربات فعاله"))
-bot.on(message("text"), ctx => ctx.reply("hi"));
+
+
 bot.command("startgame", async (ctx) => {
     const chatId = ctx.chat.id;
     const exists = redis.get(`game:${chatId}`);
@@ -53,6 +54,9 @@ function sendBoard(ctx, game) {
     }
     ctx.reply("بازی دوز :", { reply_markup: { inline_keyboard: keyboard } })
 }
+
+
+bot.on(message("text"), ctx => ctx.reply("hi"));
 
 export default async function handler(req, res) {
     if (req.method === "POST") {
