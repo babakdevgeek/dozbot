@@ -1,7 +1,6 @@
 import { Telegraf } from "telegraf";
 import { message } from "telegraf/filters";
 import { Redis } from "@upstash/redis"
-console.log(process.env.REDIS_TOKEN)
 const bot = new Telegraf(process.env.token);
 const redis = new Redis({
     url: process.env.REDIS_URL,
@@ -13,8 +12,7 @@ bot.start(ctx => ctx.reply("ربات فعاله"))
 
 bot.command("startgame", async (ctx) => {
     const chatId = ctx.chat.id;
-    const exists = redis.get(`game:${chatId}`);
-    console.log(exists)
+    const exists = await redis.get(`game:${chatId}`);
     if (exists) return ctx.reply("بازی در حال اجراست");
 
     const game = {
@@ -30,7 +28,7 @@ bot.command("startgame", async (ctx) => {
 
 bot.command("joingame", async (ctx) => {
     const chatId = ctx.chat.id;
-    const game = redis.get(`game:${chatId}`);
+    const game = await redis.get(`game:${chatId}`);
     if (!game) return ctx.reply("ابتدا /startgame را بزنید");
     if (game.players.length === 2) return ctx.reply("دو بازیکنن قبلا ثبت شده اند");
     game.players.push(ctx.from.id);
