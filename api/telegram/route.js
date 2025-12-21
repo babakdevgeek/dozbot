@@ -1,7 +1,7 @@
 import { Telegraf } from "telegraf";
 import { message } from "telegraf/filters";
 import { Redis } from "@upstash/redis"
-
+console.log(process.env.REDIS_TOKEN)
 const bot = new Telegraf(process.env.token);
 const redis = new Redis({
     token: process.env.REDIS_TOKEN,
