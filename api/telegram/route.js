@@ -41,11 +41,22 @@ bot.command("joingame", async (ctx) => {
         بازی شروع شد ✔️`);
     sendBoard(ctx, game);
 })
+
+// Canceling the game 
+bot.command("cancelgame", async (ctx) => {
+    const chatId = ctx.chat.id;
+    const game = await redis.get(`game:${chatId}`);
+    if (!game) return ctx.reply("بازی ای یافت نشد 🤷🏻‍♂️");
+    await redis.del(`game:${chatId}`);
+    ctx.reply("🛑 بازی کنسل شد!");
+})
+
 // Setting commands
 bot.telegram.setMyCommands([
     { command: "startgame", description: "شروع بازی 🤹🏻" },
     { command: "joingame", description: "پیوستن به بازی 🤹🏻" },
-    { command: "start", description: "شروع" }
+    { command: "start", description: "شروع" },
+    { command: "cancelgame", description: "کنسل کردن بازی 🛑" }
 ])
 
 // Do on button click 
