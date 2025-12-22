@@ -1,6 +1,5 @@
-import bot from "../../lib/bot";
+import bot from `${process.cwd()}/lib/bot`;
 
-bot
 
 // Setting commands
 bot.telegram.setMyCommands([

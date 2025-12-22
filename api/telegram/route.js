@@ -1,5 +1,5 @@
-import bot from "../../lib/bot";
-import redis from "../../lib/db";
+import bot from `${process.cwd()}/lib/bot`;
+import redis from `${process.cwd()}/lib/db`;
 
 bot.start(ctx => ctx.reply("سلام خوش اومدید برای شروع باید منو داخل یک گروه عضو کنید 🎮🛖"))
 
