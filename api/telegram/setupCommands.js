@@ -7,3 +7,7 @@ bot.telegram.setMyCommands([
     { command: "start", description: "شروع" },
     { command: "cancelgame", description: "کنسل کردن بازی 🛑" }
 ])
+
+export default function (req, res) {
+    res.status(200).send();
+}
