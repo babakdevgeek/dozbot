@@ -3,7 +3,7 @@ const bot = await import(`${process.cwd()}/lib/bot.js`);
 
 
 // Setting commands
-bot.telegram.setMyCommands([
+await bot.telegram.setMyCommands([
     { command: "startgame", description: "شروع بازی 🤹🏻" },
     { command: "joingame", description: "پیوستن به بازی 🤹🏻" },
     { command: "start", description: "شروع" },
