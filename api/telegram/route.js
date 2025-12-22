@@ -41,11 +41,14 @@ bot.command("joingame", async (ctx) => {
         بازی شروع شد ✔️`);
     sendBoard(ctx, game);
 })
-
+// Setting commands
 bot.telegram.setMyCommands([
     { command: "startgame", description: "شروع بازی 🤹🏻" },
     { command: "joingame", description: "پیوستن به بازی 🤹🏻" },
-], { scope: { type: "all_group_chats" } })
+    { command: "start", description: "شروع" }
+])
+
+// Do on button click 
 bot.action(/^\d$/, async (ctx) => {
     const chatId = ctx.chat.id;
     const game = await redis.get(`game:${chatId}`);
