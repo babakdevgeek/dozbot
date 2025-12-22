@@ -54,10 +54,7 @@ bot.command("cancelgame", async (ctx) => {
     ctx.reply("🛑 بازی کنسل شد!");
 })
 
-// Reset command's cache
-await bot.telegram.setMyCommands([], { scope: { type: "all_group_chats" } });
-await bot.telegram.setMyCommands([], { scope: { type: "all_private_chats" } });
-await bot.telegram.setMyCommands([], { scope: { type: "default" } });
+
 
 // Setting commands
 bot.telegram.setMyCommands([
