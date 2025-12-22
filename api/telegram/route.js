@@ -38,6 +38,11 @@ bot.command("joingame", async (ctx) => {
     sendBoard(ctx, game);
 })
 
+bot.telegram.setMyCommands([{
+    command: "startgame", description: "شروع بازی",
+    command: "joingame", description: "پیوستن به بازی",
+}], { scope: { type: "all_group_chats" } })
+
 function sendBoard(ctx, game) {
     const board = game.board;
     const keyboard = [];
