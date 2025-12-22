@@ -1,7 +1,7 @@
 import { Telegraf } from "telegraf";
 import { message } from "telegraf/filters";
 import { Redis } from "@upstash/redis"
-const bot = new Telegraf(process.env.token);
+export const bot = new Telegraf(process.env.token);
 const redis = new Redis({
     url: process.env.REDIS_URL,
     token: process.env.REDIS_TOKEN,
@@ -64,16 +64,6 @@ bot.command("cancelgame", async (ctx) => {
     ctx.reply("🛑 بازی کنسل شد!");
 })
 
-
-
-// Setting commands
-bot.telegram.setMyCommands([
-    { command: "startgame", description: "شروع بازی 🤹🏻" },
-    { command: "joingame", description: "پیوستن به بازی 🤹🏻" },
-    { command: "start", description: "شروع" },
-    { command: "cancelgame", description: "کنسل کردن بازی 🛑" }
-])
-
 // Do on button click 
 bot.action(/^\d$/, async (ctx) => {
     const chatId = ctx.chat.id;
@@ -111,6 +101,11 @@ bot.action(/^\d$/, async (ctx) => {
     });
     ctx.answerCbQuery();
 })
+
+
+
+
+
 function checkWinner(board) {
     const wins = [
         [0, 1, 2],
@@ -164,3 +159,5 @@ export default async function handler(req, res) {
 
     }
 }
+
+
