@@ -1,6 +1,29 @@
-import redis from "../../lib/db.js";
 
-import bot from "../../lib/bot.js";
+import { Redis } from "@upstash/redis"
+import { Telegraf } from "telegraf";
+
+const bot = new Telegraf(process.env.token); import redis from "../../lib/db.js";
+
+
+
+async function setBotCommands() {
+    const isset = await redis.get("commands_set");
+    if (!isset) {
+        // Setting commands
+        await bot.telegram.setMyCommands([
+            { command: "startgame", description: "شروع بازی 🤹🏻" },
+            { command: "joingame", description: "پیوستن به بازی 🤹🏻" },
+            { command: "start", description: "شروع" },
+            { command: "cancelgame", description: "کنسل کردن بازی 🛑" }
+        ], { scope: { type: "default" } })
+        await redis.set("commands_set", true);
+    }
+}
+setBotCommands();
+const redis = new Redis({
+    url: process.env.REDIS_URL,
+    token: process.env.REDIS_TOKEN,
+});
 
 
 
