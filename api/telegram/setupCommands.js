@@ -1,4 +1,5 @@
-import bot from `${process.cwd()}/lib/bot`;
+const bot = await import(`${process.cwd()}/lib/bot.js`);
+
 
 
 // Setting commands

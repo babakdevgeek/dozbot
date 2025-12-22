@@ -1,5 +1,6 @@
-import bot from `${process.cwd()}/lib/bot`;
-import redis from `${process.cwd()}/lib/db`;
+const bot = await import(`${process.cwd()}/lib/bot.js`);
+const redis = await import(`${process.cwd()}/lib/redis.js`);
+
 
 bot.start(ctx => ctx.reply("سلام خوش اومدید برای شروع باید منو داخل یک گروه عضو کنید 🎮🛖"))
 
