@@ -23,10 +23,13 @@ bot.command("startgame", async (ctx) => {
     }
 
     await redis.set(`game:${chatId}`, game);
-    ctx.replyWithAnimation("https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjJzcjF6M3l3cnU2YmNqZzllZHkydTVkdG1sYnJremZ5OGxlZm9xeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B9WWEhoJQQfjtaQKEG/giphy.gif", {
+    await ctx.replyWithAnimation("https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjJzcjF6M3l3cnU2YmNqZzllZHkydTVkdG1sYnJremZ5OGxlZm9xeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B9WWEhoJQQfjtaQKEG/giphy.gif", {
         caption: `بازیکن اول جوین شد 🎊
-        بازیکن دوم دستور 
-        /joingame را ارسال کند`,
+        بازیکن دوم دستور
+
+        /joingame 
+        
+        را ارسال کند`,
     })
 
 });
