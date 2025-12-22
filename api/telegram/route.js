@@ -17,7 +17,7 @@ bot.command("startgame", async (ctx) => {
 
     const game = {
         board: Array(9).fill(""),
-        turn: "x",
+        turn: "b",
         players: [ctx.from.id]
     }
 
@@ -42,7 +42,57 @@ bot.telegram.setMyCommands([{
     command: "startgame", description: "شروع بازی",
     command: "joingame", description: "پیوستن به بازی",
 }], { scope: { type: "all_group_chats" } })
+bot.action(/^\d$/, async (ctx) => {
+    const chatId = ctx.chat.id;
+    const game = await redis.get(`game:${chatId}`);
+    if (!game) return ctx.answerCbQuery("بازی هنوز شروع نشده");
 
+    const playerId = ctx.from.id;
+    const currentPlayer = game.turn === "b" ? game.players[0] : game.players[1];
+    if (playerId !== currentPlayer) return ctx.answerCbQuery(`نوبت شما نیست!`);
+
+    const idx = parseInt(ctx.match[0]);
+    if (game.board[idx]) return ctx.answerCbQuery("خانه پر است");
+
+    game.board[idx] = game.turn;
+    game.turn = game.turn === "b" ? "z" : "b";
+    const winner = checkWinner(game.board);
+    if (winner) {
+        await redis.del(`game:${chatId}`);
+        await ctx.editMessageReplyMarkup({
+            inline_keyboard: sendBoard(game)
+        })
+        if (winner === "draw") {
+            return ctx.reply("بازی مساوی شد");
+        } else {
+            return ctx.reply(`برنده شد ${winner}`);
+        }
+    }
+
+    await redis.set(`game:${chatId}`, game);
+    await ctx.editMessageReplyMarkup({
+        inline_keyboard: sendBoard(game)
+    });
+    ctx.answerCbQuery();
+})
+function checkWinner(board) {
+    const wins = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ]
+    for (const [a, b, c] of wins) {
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a];
+    }
+    if (board.every(x => x)) return "draw";
+
+    return null;
+}
 function sendBoard(ctx, game) {
     const board = game.board;
     const keyboard = [];
