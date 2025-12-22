@@ -8,7 +8,7 @@ await bot.telegram.setMyCommands([
     { command: "joingame", description: "پیوستن به بازی 🤹🏻" },
     { command: "start", description: "شروع" },
     { command: "cancelgame", description: "کنسل کردن بازی 🛑" }
-], { scope: "default" })
+], { scope: { type: "default" } })
 
 export default function (req, res) {
     res.status(200).send();
