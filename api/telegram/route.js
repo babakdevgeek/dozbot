@@ -2,7 +2,7 @@
 import { Redis } from "@upstash/redis"
 import { Telegraf } from "telegraf";
 
-const bot = new Telegraf(process.env.token); import redis from "../../lib/db.js";
+const bot = new Telegraf(process.env.token);
 const redis = new Redis({
     url: process.env.REDIS_URL,
     token: process.env.REDIS_TOKEN,
