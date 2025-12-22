@@ -9,20 +9,20 @@ const redis = new Redis({
 });
 
 
-async function setBotCommands() {
-    const isset = await redis.get("commands_set");
-    if (!isset) {
-        // Setting commands
-        await bot.telegram.setMyCommands([
-            { command: "startgame", description: "شروع بازی 🤹🏻" },
-            { command: "joingame", description: "پیوستن به بازی 🤹🏻" },
-            { command: "start", description: "شروع" },
-            { command: "cancelgame", description: "کنسل کردن بازی 🛑" }
-        ], { scope: { type: "default" } })
-        await redis.set("commands_set", true);
-    }
-}
-setBotCommands();
+// async function setBotCommands() {
+//     const isset = await redis.get("commands_set");
+//     if (!isset) {
+//         // Setting commands
+//         await bot.telegram.setMyCommands([
+//             { command: "startgame", description: "شروع بازی 🤹🏻" },
+//             { command: "joingame", description: "پیوستن به بازی 🤹🏻" },
+//             { command: "start", description: "شروع" },
+//             { command: "cancelgame", description: "کنسل کردن بازی 🛑" }
+//         ], { scope: { type: "default" } })
+//         await redis.set("commands_set", true);
+//     }
+// }
+// setBotCommands();
 
 
 
@@ -65,13 +65,13 @@ bot.command("joingame", async (ctx) => {
     await redis.set(`game:${chatId}`, game);
     ctx.reply(`بازیکن دوم ثبت شد 
     بازی شروع شد ✔️`);
-    const memberb = await ctx.telegram.getChatMember(chatId, game.players[0]);
-    const memberz = await ctx.telegram.getChatMember(chatId, game.players[1]);
-    ctx.reply(`
-${memberb.user.first_name} : b 
-                vs
-${memberz.user.first_name} : z
-        `)
+    //     const memberb = await ctx.telegram.getChatMember(chatId, game.players[0]);
+    //     const memberz = await ctx.telegram.getChatMember(chatId, game.players[1]);
+    //     ctx.reply(`
+    // ${memberb.user.first_name} : b 
+    //                 vs
+    // ${memberz.user.first_name} : z
+    //         `)
     sendBoard(ctx, game);
 })
 
