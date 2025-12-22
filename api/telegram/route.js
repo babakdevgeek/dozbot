@@ -7,13 +7,13 @@ const redis = new Redis({
     token: process.env.REDIS_TOKEN,
 });
 
-bot.start(ctx => ctx.reply("ربات فعاله"))
+bot.start(ctx => ctx.reply("سلام خوش اومدید برای شروع باید منو داخل یک گروه عضو کنید 🎮🛖"))
 
 
 bot.command("startgame", async (ctx) => {
     const chatId = ctx.chat.id;
     const exists = await redis.get(`game:${chatId}`);
-    if (exists) return ctx.reply("بازی در حال اجراست");
+    if (exists) return ctx.reply("بازی در حال اجراست 🤫");
 
     const game = {
         board: Array(9).fill(""),
@@ -22,25 +22,27 @@ bot.command("startgame", async (ctx) => {
     }
 
     await redis.set(`game:${chatId}`, game);
-    ctx.reply(`بازیکن اول جوین شد 
-        بازیکن دوم دستور /joingame را ارسال کند`);
+    ctx.reply(`بازیکن اول جوین شد 🎊
+        بازیکن دوم دستور 
+        /joingame را ارسال کند`);
 });
 
 bot.command("joingame", async (ctx) => {
     const chatId = ctx.chat.id;
     const game = await redis.get(`game:${chatId}`);
     if (!game) return ctx.reply("ابتدا /startgame را بزنید");
-    if (game.players.length === 2) return ctx.reply("دو بازیکنن قبلا ثبت شده اند");
+    if (game.players.length === 2) return ctx.reply("دو بازیکنن قبلا ثبت شده اند 🚫");
+    if (ctx.from.id === game.players[0]) return ctx.reply("نمی توانی دوباره به عنوان بازیکن دوم وارد شوی 👎🏻")
     game.players.push(ctx.from.id);
     await redis.set(`game:${chatId}`, game);
     ctx.reply(`بازیکن دوم ثبت شد 
-        بازی شروع شد`);
+        بازی شروع شد ✔️`);
     sendBoard(ctx, game);
 })
 
 bot.telegram.setMyCommands([{
-    command: "startgame", description: "شروع بازی",
-    command: "joingame", description: "پیوستن به بازی",
+    command: "startgame", description: "شروع بازی 🤹🏻",
+    command: "joingame", description: "پیوستن به بازی 🤹🏻",
 }], { scope: { type: "all_group_chats" } })
 bot.action(/^\d$/, async (ctx) => {
     const chatId = ctx.chat.id;
@@ -49,10 +51,10 @@ bot.action(/^\d$/, async (ctx) => {
 
     const playerId = ctx.from.id;
     const currentPlayer = game.turn === "b" ? game.players[0] : game.players[1];
-    if (playerId !== currentPlayer) return ctx.answerCbQuery(`نوبت شما نیست!`);
+    if (playerId !== currentPlayer) return ctx.answerCbQuery(`نوبت شما نیست 👎🏻`);
 
     const idx = parseInt(ctx.match[0]);
-    if (game.board[idx]) return ctx.answerCbQuery("خانه پر است");
+    if (game.board[idx]) return ctx.answerCbQuery("خانه پر است 🙊");
 
     game.board[idx] = game.turn;
     game.turn = game.turn === "b" ? "z" : "b";
@@ -63,9 +65,9 @@ bot.action(/^\d$/, async (ctx) => {
             inline_keyboard: sendBoard(game)
         })
         if (winner === "draw") {
-            return ctx.reply("بازی مساوی شد");
+            return ctx.reply("بازی مساوی شد 🟰");
         } else {
-            return ctx.reply(`برنده شد ${winner}`);
+            return ctx.reply(`برنده شد 🤹🏻🎊 ${winner}`);
         }
     }
 
