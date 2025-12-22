@@ -1,11 +1,5 @@
-import { Telegraf } from "telegraf";
-import { message } from "telegraf/filters";
-import { Redis } from "@upstash/redis"
-export const bot = new Telegraf(process.env.token);
-const redis = new Redis({
-    url: process.env.REDIS_URL,
-    token: process.env.REDIS_TOKEN,
-});
+import bot from "../../lib/bot";
+import redis from "../../lib/db";
 
 bot.start(ctx => ctx.reply("سلام خوش اومدید برای شروع باید منو داخل یک گروه عضو کنید 🎮🛖"))
 

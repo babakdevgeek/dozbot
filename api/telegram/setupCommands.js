@@ -1,4 +1,6 @@
-import { bot } from "./route";
+import bot from "../../lib/bot";
+
+bot
 
 // Setting commands
 bot.telegram.setMyCommands([
