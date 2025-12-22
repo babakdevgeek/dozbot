@@ -11,6 +11,7 @@ bot.start(ctx => ctx.reply("سلام خوش اومدید برای شروع با�
 
 
 bot.command("startgame", async (ctx) => {
+    if (ctx.chat.type === "private") return ctx.reply("بازی فقط داخل گروه اجرا میشود 🙂");
     const chatId = ctx.chat.id;
     const exists = await redis.get(`game:${chatId}`);
     if (exists) return ctx.reply("بازی در حال اجراست 🤫");
@@ -28,6 +29,7 @@ bot.command("startgame", async (ctx) => {
 });
 
 bot.command("joingame", async (ctx) => {
+    if (ctx.chat.type === "private") return ctx.reply("بازی فقط داخل گروه اجرا میشود 🙂");
     const chatId = ctx.chat.id;
     const game = await redis.get(`game:${chatId}`);
     if (!game) return ctx.reply("ابتدا /startgame را بزنید");
@@ -62,18 +64,21 @@ bot.action(/^\d$/, async (ctx) => {
     if (winner) {
         await redis.del(`game:${chatId}`);
         await ctx.editMessageReplyMarkup({
-            inline_keyboard: sendBoard(game)
+            inline_keyboard: getBoardKeyboard(game)
         })
         if (winner === "draw") {
             return ctx.reply("بازی مساوی شد 🟰");
         } else {
-            return ctx.reply(`برنده شد 🤹🏻🎊 ${winner}`);
+            let winnerMember = winner;
+            if (winner === "b") winnerMember = await ctx.telegram.getChatMember(chatId, game.players[0]);
+            if (winner === "z") winnerMember = await ctx.telegram.getChatMember(chatId, game.players[1]);
+            return ctx.reply(`برنده شد 🤹🏻🎊 ${winnerMember.user.first_name}`);
         }
     }
 
     await redis.set(`game:${chatId}`, game);
     await ctx.editMessageReplyMarkup({
-        inline_keyboard: sendBoard(game)
+        inline_keyboard: getBoardKeyboard(game)
     });
     ctx.answerCbQuery();
 })
@@ -95,7 +100,7 @@ function checkWinner(board) {
 
     return null;
 }
-function sendBoard(ctx, game) {
+function getBoardKeyboard(game) {
     const board = game.board;
     const keyboard = [];
     for (let i = 0; i < 3; i++) {
@@ -108,7 +113,11 @@ function sendBoard(ctx, game) {
         }
         keyboard.push(row);
     }
-    ctx.reply("بازی دوز :", { reply_markup: { inline_keyboard: keyboard } })
+    return keyboard;
+}
+
+function sendBoard(ctx, game) {
+    ctx.reply("بازی دوز :", { reply_markup: { inline_keyboard: getBoardKeyboard(game) } })
 }
 
 
