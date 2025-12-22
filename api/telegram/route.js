@@ -94,8 +94,7 @@ bot.action(/^\d$/, async (ctx) => {
             let winnerMember = winner;
             if (winner === "b") winnerMember = await ctx.telegram.getChatMember(chatId, game.players[0]);
             if (winner === "z") winnerMember = await ctx.telegram.getChatMember(chatId, game.players[1]);
-            await ctx.replyWithAnimation("https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N2RlZ2d6ajNwaW54czFmdHBlcjFlb2F2cWh4cGUzN3RpN2ZnZW56dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Um3ljJl8jrnHy/giphy.gif", { caption: `برنده شد 🤹🏻🎊 ${winnerMember.user.first_name}` });
-            return await ctx.replyWithAudio("https://www.dropbox.com/scl/fi/31zpu7uxf40458nqhy215/audio-1003142207479194988998656.mp4a.m4a?rlkey=9mh1rk5kshwgqmme6ciwu6ku5&st=70zpqrob&dl=0")
+            return await ctx.replyWithAnimation("https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N2RlZ2d6ajNwaW54czFmdHBlcjFlb2F2cWh4cGUzN3RpN2ZnZW56dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Um3ljJl8jrnHy/giphy.gif", { caption: `برنده شد 🤹🏻🎊 ${winnerMember.user.first_name}` });
         }
     }
 
