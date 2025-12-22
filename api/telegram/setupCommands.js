@@ -1,4 +1,4 @@
-const bot = await import(`${process.cwd()}/lib/bot.js`);
+import bot from "../../lib/bot.js";
 
 
 
