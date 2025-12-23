@@ -72,7 +72,7 @@ bot.action(/^\d$/, async (ctx) => {
     if (!game) return ctx.answerCbQuery("بازی هنوز شروع نشده");
 
     const playerId = ctx.from.id;
-    const currentPlayer = game.turn === "b" ? game.players[0] : game.players[1];
+    const currentPlayer = game.turn === "b" ? game.players[0].id : game.players[1].id;
     if (playerId !== currentPlayer) return ctx.answerCbQuery(`نوبت شما نیست 👎🏻`);
 
     const idx = parseInt(ctx.match[0]);
