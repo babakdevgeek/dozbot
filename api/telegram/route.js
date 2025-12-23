@@ -46,13 +46,6 @@ bot.command("joingame", async (ctx) => {
     await redis.set(`game:${chatId}`, game);
     ctx.reply(`بازیکن دوم ثبت شد 
     بازی شروع شد ✔️`);
-    const memberb = await ctx.telegram.getChatMember(chatId, game.players[0]);
-    const memberz = await ctx.telegram.getChatMember(chatId, game.players[1]);
-    ctx.reply(`
-    ${memberb.user.first_name} : b 
-                    vs
-    ${memberz.user.first_name} : z
-            `)
     sendBoard(ctx, game);
 })
 
