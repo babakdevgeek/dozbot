@@ -43,7 +43,7 @@ bot.command("joingame", async (ctx) => {
     const game = await redis.get(`game:${chatId}`);
     if (!game) return ctx.reply("ابتدا /startgame را بزنید");
     if (game.players.length === 2) return ctx.reply("دو بازیکنن قبلا ثبت شده اند 🚫");
-    if (ctx.from.id === game.players[0]) return ctx.reply("نمی توانی دوباره به عنوان بازیکن دوم وارد شوی 👎🏻")
+    if (ctx.from.id === game.players[0].id) return ctx.reply("نمی توانی دوباره به عنوان بازیکن دوم وارد شوی 👎🏻")
     game.players.push({
         id: ctx.from.id,
         first_name: ctx.from.first_name,
