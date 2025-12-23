@@ -51,7 +51,7 @@ bot.command("joingame", async (ctx) => {
     });
     const secondPlayerName = game.players[1].first_name;
     ctx.reply(messages.joined(secondPlayerName));
-    const msgId = sendBoard(ctx, game);
+    const msgId = await sendBoard(ctx, game);
     game.boardMessageId = msgId;
     await redis.set(`game:${chatId}`, game);
 })
