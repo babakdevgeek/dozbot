@@ -1,11 +1,12 @@
 
 import { Redis } from "@upstash/redis"
 import bot from "../../lib/bot.js"
+import { messages } from "../../lib/messages.js";
 const redis = new Redis({
     url: process.env.REDIS_URL,
     token: process.env.REDIS_TOKEN,
 });
-
+messages
 
 
 bot.start(ctx => ctx.reply("سلام خوش اومدید برای شروع باید منو داخل یک گروه عضو کنید 🎮🛖"))
@@ -20,17 +21,18 @@ bot.command("startgame", async (ctx) => {
     const game = {
         board: Array(9).fill(""),
         turn: "b",
-        players: [ctx.from.id]
+        players: [{
+            id: ctx.from.id,
+            first_name: ctx.from.first_name,
+            username: ctx.from.username || null
+        }],
+        boardMessageId: null
     }
 
     await redis.set(`game:${chatId}`, game);
+    const firstPlayerName = game.players[0].first_name;
     await ctx.replyWithAnimation("https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjJzcjF6M3l3cnU2YmNqZzllZHkydTVkdG1sYnJremZ5OGxlZm9xeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B9WWEhoJQQfjtaQKEG/giphy.gif", {
-        caption: `بازیکن اول جوین شد 🎊
-        بازیکن دوم دستور
-
-        /joingame 
-        
-        را ارسال کند`,
+        caption: messages.start(firstPlayerName),
     })
 
 });
@@ -42,11 +44,16 @@ bot.command("joingame", async (ctx) => {
     if (!game) return ctx.reply("ابتدا /startgame را بزنید");
     if (game.players.length === 2) return ctx.reply("دو بازیکنن قبلا ثبت شده اند 🚫");
     if (ctx.from.id === game.players[0]) return ctx.reply("نمی توانی دوباره به عنوان بازیکن دوم وارد شوی 👎🏻")
-    game.players.push(ctx.from.id);
+    game.players.push({
+        id: ctx.from.id,
+        first_name: ctx.from.first_name,
+        username: ctx.from.username || null
+    });
+    const secondPlayerName = game.players[1].first_name;
+    ctx.reply(messages.joined(secondPlayerName));
+    const msgId = sendBoard(ctx, game);
+    game.boardMessageId = msgId;
     await redis.set(`game:${chatId}`, game);
-    ctx.reply(`بازیکن دوم ثبت شد 
-    بازی شروع شد ✔️`);
-    sendBoard(ctx, game);
 })
 
 // Canceling the game 
@@ -55,7 +62,7 @@ bot.command("cancelgame", async (ctx) => {
     const game = await redis.get(`game:${chatId}`);
     if (!game) return ctx.reply("بازی ای یافت نشد 🤷🏻‍♂️");
     await redis.del(`game:${chatId}`);
-    ctx.reply("🛑 بازی کنسل شد!");
+    ctx.reply(messages.cancel(ctx.from.first_name));
 })
 
 // Do on button click 
@@ -82,17 +89,18 @@ bot.action(/^\d$/, async (ctx) => {
         if (winner === "draw") {
             return ctx.reply("بازی مساوی شد 🟰");
         } else {
-            let winnerMember = winner;
-            if (winner === "b") winnerMember = await ctx.telegram.getChatMember(chatId, game.players[0]);
-            if (winner === "z") winnerMember = await ctx.telegram.getChatMember(chatId, game.players[1]);
-            return await ctx.replyWithAnimation("https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N2RlZ2d6ajNwaW54czFmdHBlcjFlb2F2cWh4cGUzN3RpN2ZnZW56dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Um3ljJl8jrnHy/giphy.gif", { caption: `برنده شد 🤹🏻🎊 ${winnerMember.user.first_name}` });
+            let winnerFirstname = winner;
+            if (winner === "b") winnerFirstname = game.players[0].first_name;
+            if (winner === "z") winnerFirstname = game.players[1].first_name;
+            return await ctx.replyWithAnimation("https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N2RlZ2d6ajNwaW54czFmdHBlcjFlb2F2cWh4cGUzN3RpN2ZnZW56dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Um3ljJl8jrnHy/giphy.gif", { caption: `برنده شد 🤹🏻🎊 ${winnerFirstname}` });
         }
     }
-
+    const firstNameOfNextPlayer = game.turn === "b" ? game.players[1].first_name : game.players[0].first_name
     await redis.set(`game:${chatId}`, game);
     await ctx.editMessageReplyMarkup({
         inline_keyboard: getBoardKeyboard(game)
     });
+    ctx.reply(messages.turn(firstNameOfNextPlayer), { reply_parameters: { message_id: game.boardMessageId } });
     ctx.answerCbQuery();
 })
 
@@ -134,8 +142,9 @@ function getBoardKeyboard(game) {
     return keyboard;
 }
 
-function sendBoard(ctx, game) {
-    ctx.reply("بازی دوز :", { reply_markup: { inline_keyboard: getBoardKeyboard(game) } })
+async function sendBoard(ctx, game) {
+    const msg = await ctx.reply("بازی دوز :", { reply_markup: { inline_keyboard: getBoardKeyboard(game) } });
+    return msg.message_id;
 }
 
 
