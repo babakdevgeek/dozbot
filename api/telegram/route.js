@@ -95,7 +95,7 @@ bot.action(/^\d$/, async (ctx) => {
             return await ctx.replyWithAnimation("https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N2RlZ2d6ajNwaW54czFmdHBlcjFlb2F2cWh4cGUzN3RpN2ZnZW56dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Um3ljJl8jrnHy/giphy.gif", { caption: `برنده شد 🤹🏻🎊 ${winnerFirstname}` });
         }
     }
-    const firstNameOfNextPlayer = game.turn === "b" ? game.players[1].first_name : game.players[0].first_name
+    const firstNameOfNextPlayer = game.turn === "b" ? game.players[0].first_name : game.players[1].first_name
     await redis.set(`game:${chatId}`, game);
     await ctx.editMessageReplyMarkup({
         inline_keyboard: getBoardKeyboard(game)
